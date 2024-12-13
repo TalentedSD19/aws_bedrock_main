@@ -34,8 +34,8 @@ def data_ingestion():
     documents=loader.load()
 
     # - in our testing Character split works better with this PDF data set
-    text_splitter=RecursiveCharacterTextSplitter(chunk_size=10000,
-                                                 chunk_overlap=1000)
+    text_splitter=RecursiveCharacterTextSplitter(chunk_size=3000,
+                                                 chunk_overlap=300)
     
     docs=text_splitter.split_documents(documents)
     return docs
@@ -49,16 +49,16 @@ def get_vector_store(docs):
     )
     vectorstore_faiss.save_local("faiss_index")
 
-def get_claude_llm():
-    ##create the Anthropic Model
-    llm=Bedrock(model_id="ai21.j2-mid-v1",client=bedrock,
-                model_kwargs={'maxTokens':512})
+# def get_claude_llm():
+#     ##create the Anthropic Model
+#     llm=Bedrock(model_id="ai21.j2-mid-v1",client=bedrock,
+#                 model_kwargs={'maxTokens':512})
     
-    return llm
+#     return llm
 
-def get_llama2_llm():
-    ##create the Anthropic Model
-    llm=Bedrock(model_id="meta.llama2-70b-chat-v1",client=bedrock,
+def get_llama3_llm():
+    ##create the Klama3 Model
+    llm=Bedrock(model_id="meta.llama3-8b-instruct-v1:0",client=bedrock,
                 model_kwargs={'max_gen_len':512})
     
     return llm
@@ -66,12 +66,12 @@ def get_llama2_llm():
 prompt_template = """
 
 Human: Use the following pieces of context to provide a 
-concise answer to the question at the end but usse atleast summarize with 
+concise answer to the question at the end. Use atleast with 
 250 words with detailed explaantions. If you don't know the answer, 
 just say that you don't know, don't try to make up an answer.
 <context>
 {context}
-</context
+</context>
 
 Question: {question}
 
@@ -111,19 +111,19 @@ def main():
                 get_vector_store(docs)
                 st.success("Done")
 
-    if st.button("Claude Output"):
-        with st.spinner("Processing..."):
-            faiss_index = FAISS.load_local("faiss_index", bedrock_embeddings)
-            llm=get_claude_llm()
+    # if st.button("Claude Output"):
+    #     with st.spinner("Processing..."):
+    #         faiss_index = FAISS.load_local("faiss_index", bedrock_embeddings)
+    #         llm=get_claude_llm()
             
-            #faiss_index = get_vector_store(docs)
-            st.write(get_response_llm(llm,faiss_index,user_question))
-            st.success("Done")
+    #         #faiss_index = get_vector_store(docs)
+    #         st.write(get_response_llm(llm,faiss_index,user_question))
+    #         st.success("Done")
 
-    if st.button("Llama2 Output"):
+    if st.button("Llama3 Output"):
         with st.spinner("Processing..."):
-            faiss_index = FAISS.load_local("faiss_index", bedrock_embeddings)
-            llm=get_llama2_llm()
+            faiss_index = FAISS.load_local("faiss_index", bedrock_embeddings, allow_dangerous_deserialization=True)
+            llm=get_llama3_llm()
             
             #faiss_index = get_vector_store(docs)
             st.write(get_response_llm(llm,faiss_index,user_question))
