@@ -1,0 +1,12 @@
+{
+  "modelId": "meta.llama3-8b-instruct-v1:0",
+  "contentType": "application/json",
+  "accept": "application/json",
+  "body": "{\"prompt\":\"this is where you place your input text\",\"max_gen_len\":512,\"temperature\":0.5,\"top_p\":0.9}"
+}
+{
+"modelId": "amazon.titan-image-generator-v1",
+"contentType": "application/json",
+"accept": "application/json",
+"body": "{\"textToImageParams\":{\"text\":\"this is where you place your input text\"},\"taskType\":\"TEXT_IMAGE\",\"imageGenerationConfig\":{\"cfgScale\":8,\"seed\":42,\"quality\":\"standard\",\"width\":1024,\"height\":1024,\"numberOfImages\":3}}"
+}
